@@ -5,6 +5,10 @@ import { performance } from 'node:perf_hooks'
 import { monitorLogs } from "./db/schema";
 import https from 'node:https'
 
+const agent = new https.Agent({
+  keepAlive: false
+});
+
 const queueName = `${env.NODE_ENV}-monitor-checks`
 
 export const monitorQueue = new Queue(queueName, {
@@ -81,7 +85,7 @@ function testUrl(url: string) {
     const timings: any = {};
     const start = performance.now();
 
-    const req = https.request(url, res => {
+    const req = https.request(url, { agent }, res => {
       timings.firstByte = performance.now() - start;
       timings.statusCode = res.statusCode
 
