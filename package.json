@@ -1,0 +1,51 @@
+{
+  "name": "uptime",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "react-router build",
+    "dev": "react-router dev",
+    "start": "react-router-serve ./build/server/index.js && start:monitors",
+    "typecheck": "react-router typegen && tsc",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit generate && drizzle-kit migrate",
+    "start:monitors": "tsx -r dotenv/config app/monitors.ts"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.17.0",
+    "@paralleldrive/cuid2": "^3.3.0",
+    "@react-router/node": "7.12.0",
+    "@react-router/serve": "7.12.0",
+    "argon2": "^0.44.0",
+    "bullmq": "^5.70.4",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.1",
+    "isbot": "^5.1.31",
+    "qs": "^6.15.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router": "7.12.0",
+    "redis": "^5.11.0",
+    "resend": "^6.9.3",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@react-router/dev": "7.12.0",
+    "@tailwindcss/vite": "^4.1.13",
+    "@types/node": "^22",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "drizzle-kit": "^0.31.9",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.7",
+    "vite-tsconfig-paths": "^5.1.4"
+  },
+  "volta": {
+    "node": "24.14.0"
+  }
+}

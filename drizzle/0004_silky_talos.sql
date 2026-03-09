@@ -1,0 +1,1 @@
+ALTER TABLE `monitors` RENAME COLUMN "frequency" TO "interval";

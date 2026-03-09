@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1773069772917,
+      "tag": "0000_robust_karen_page",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1773070053297,
+      "tag": "0001_lush_moon_knight",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1773070368226,
+      "tag": "0002_wooden_quicksilver",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1773076824975,
+      "tag": "0003_massive_scalphunter",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1773077053788,
+      "tag": "0004_silky_talos",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1773077962012,
+      "tag": "0005_clever_sandman",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1773082209489,
+      "tag": "0006_public_timeslip",
+      "breakpoints": true
+    }
+  ]
+}
