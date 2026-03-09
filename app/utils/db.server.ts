@@ -4,6 +4,6 @@ import * as schema from '~/db/schema'
 export const db = drizzle({
   schema: schema,
   connection: {
-    url: 'file:./db.sqlite'
+    url: 'file:./data/db.sqlite'
   }
 })
