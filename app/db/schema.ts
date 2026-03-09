@@ -28,8 +28,12 @@ export const monitors = sqliteTable('monitors', {
 
 export const monitorLogs = sqliteTable('monitorLogs', {
   id: integer({ mode: 'number' }).primaryKey({ autoIncrement: true }),
-  monitorId: integer({ mode: 'number' }).notNull(),
-  statusCode: integer({ mode: 'number' }).notNull(),
-  responseTime: integer({ mode: 'number' }).notNull(),
+  monitorId: integer({ mode: 'number' }),
+  statusCode: integer({ mode: 'number' }),
+  responseTimeDNS: integer({ mode: 'number' }),
+  responseTimeTCP: integer({ mode: 'number' }),
+  responseTimeTLS: integer({ mode: 'number' }),
+  responseTimeFirstByte: integer({ mode: 'number' }),
+  responseTime: integer({ mode: 'number' }),
   createdAt: integer({ mode: 'timestamp_ms' })
 })

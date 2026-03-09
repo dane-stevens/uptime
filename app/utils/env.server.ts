@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const ENV = z.object({
+	NODE_ENV: z.union([z.literal('development'), z.literal('test'), z.literal('production')]),
 	SESSION_SECRET: z.string(),
 	REDIS_URL: z.string(),
 	EMAIL_DOMAIN: z.string(),

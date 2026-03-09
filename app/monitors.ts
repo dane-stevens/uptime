@@ -3,8 +3,9 @@ import { Queue, Worker } from 'bullmq'
 import { env } from "./utils/env.server";
 import { performance } from 'node:perf_hooks'
 import { monitorLogs } from "./db/schema";
+import https from 'node:https'
 
-const queueName = 'monitor-checks'
+const queueName = `${env.NODE_ENV}-monitor-checks`
 
 export const monitorQueue = new Queue(queueName, {
   connection: {
@@ -42,15 +43,18 @@ const worker = new Worker(queueName, async (job) => {
   const start = performance.now()
 
   try {
-    const res = await fetch(url, { signal: controller.signal })
-    clearTimeout(timeout)
-    const responseTime = performance.now() - start
+    const res = await testUrl(url).then(res => res)
     await db.insert(monitorLogs).values({
       monitorId: monitorId,
-      statusCode: res.status,
-      responseTime,
+      statusCode: res.statusCode,
+      responseTime: res.total,
+      responseTimeDNS: res.dns,
+      responseTimeFirstByte: res.firstByte,
+      responseTimeTCP: res.tcp,
+      responseTimeTLS: res.tls,
       createdAt: now
     })
+
     return {
       status: res.status,
       ok: res.ok,
@@ -72,3 +76,39 @@ const worker = new Worker(queueName, async (job) => {
     url: env.REDIS_URL
   }
 })
+
+function testUrl(url: string) {
+  return new Promise((resolve, reject) => {
+    const timings: any = {};
+    const start = performance.now();
+
+    const req = https.request(url, res => {
+      timings.firstByte = performance.now() - start;
+      timings.statusCode = res.statusCode
+
+      res.once("end", () => {
+        timings.total = performance.now() - start;
+        resolve(timings);
+      });
+
+      res.resume();
+    });
+
+    req.on("socket", socket => {
+      socket.once("lookup", () => {
+        timings.dns = performance.now() - start;
+      });
+
+      socket.once("connect", () => {
+        timings.tcp = performance.now() - start;
+      });
+
+      socket.once("secureConnect", () => {
+        timings.tls = performance.now() - start;
+      });
+    });
+
+    req.on("error", reject);
+    req.end();
+  });
+}
