@@ -85,7 +85,7 @@ function testUrl(url: string) {
     const timings: any = {};
     const start = performance.now();
 
-    const req = https.request(url, { agent }, res => {
+    const req = https.request(url, { agent, headers: { 'User-Agent': 'uptime-monitor/1.0' } }, res => {
       timings.firstByte = performance.now() - start;
       timings.statusCode = res.statusCode
 
@@ -96,6 +96,10 @@ function testUrl(url: string) {
 
       res.resume();
     });
+
+    req.setTimeout(10000, () => {
+      req.destroy(new Error("timeout"))
+    })
 
     req.on("socket", socket => {
       socket.once("lookup", () => {
