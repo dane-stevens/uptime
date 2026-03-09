@@ -44,6 +44,7 @@ const worker = new Worker(queueName, async (job) => {
 
   try {
     const res = await testUrl(url).then(res => res)
+    console.log(res)
     await db.insert(monitorLogs).values({
       monitorId: monitorId,
       statusCode: res.statusCode,
@@ -56,9 +57,7 @@ const worker = new Worker(queueName, async (job) => {
     })
 
     return {
-      status: res.status,
-      ok: res.ok,
-      responseTime
+      status: res.statusCode,
     }
 
   } catch (err: any) {
