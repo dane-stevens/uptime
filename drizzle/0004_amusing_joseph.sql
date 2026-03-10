@@ -1,0 +1,1 @@
+ALTER TABLE "monitorLogs" ADD COLUMN "region" varchar(50);

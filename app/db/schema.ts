@@ -1,5 +1,5 @@
 import { createId } from '@paralleldrive/cuid2'
-import { pgTable, integer, bigserial, serial, timestamp, boolean, varchar, decimal } from "drizzle-orm/pg-core";
+import { pgTable, integer, bigserial, serial, timestamp, boolean, varchar, decimal, json } from "drizzle-orm/pg-core";
 
 export const USER_TYPES = [
   'OWNER',
@@ -23,7 +23,8 @@ export const monitors = pgTable('monitors', {
   hId: varchar({ length: 40 }).unique().notNull().$defaultFn(() => `mon_${createId()}`),
   url: varchar({ length: 255 }),
   interval: integer().default(300),
-  isActive: boolean().default(true)
+  isActive: boolean().default(true),
+  regions: json().$type<string[]>().default([])
 })
 
 export const monitorLogs = pgTable('monitorLogs', {
@@ -35,5 +36,6 @@ export const monitorLogs = pgTable('monitorLogs', {
   responseTimeTLS: decimal({ precision: 8, scale: 4 }),
   responseTimeFirstByte: decimal({ precision: 8, scale: 4 }),
   responseTime: decimal({ precision: 8, scale: 4 }),
+  region: varchar({ length: 50 }),
   createdAt: timestamp({ withTimezone: true, precision: 6 }),
 })

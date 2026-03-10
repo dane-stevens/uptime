@@ -33,6 +33,7 @@ new Worker(`${queueName}_${env.RAILWAY_REPLICA_REGION}`, async (job) => {
       responseTimeFirstByte: res.firstByte,
       responseTimeTCP: res.tcp,
       responseTimeTLS: res.tls,
+      region: env.RAILWAY_REPLICA_REGION,
       createdAt: now
     })
 
