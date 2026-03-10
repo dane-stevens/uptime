@@ -5,4 +5,5 @@ export default [
   route("/login", "routes/login.tsx"),
   route("/setup", "routes/setup.tsx"),
   route("/monitorStats/:monitor_id", "routes/monitorStats.ts"),
+  route("/monitor/:monitor_hId", "routes/monitor.tsx"),
 ] satisfies RouteConfig;

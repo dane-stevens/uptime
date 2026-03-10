@@ -1,6 +1,6 @@
 {
-  "id": "bc9e79f0-a58c-48b8-a465-d56ace677c7e",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "82438b6e-2d7d-4a48-a895-2caef2d111f1",
+  "prevId": "bc9e79f0-a58c-48b8-a465-d56ace677c7e",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -28,31 +28,31 @@
         },
         "responseTimeDNS": {
           "name": "responseTimeDNS",
-          "type": "integer",
+          "type": "numeric(2)",
           "primaryKey": false,
           "notNull": false
         },
         "responseTimeTCP": {
           "name": "responseTimeTCP",
-          "type": "integer",
+          "type": "numeric(2)",
           "primaryKey": false,
           "notNull": false
         },
         "responseTimeTLS": {
           "name": "responseTimeTLS",
-          "type": "integer",
+          "type": "numeric(2)",
           "primaryKey": false,
           "notNull": false
         },
         "responseTimeFirstByte": {
           "name": "responseTimeFirstByte",
-          "type": "integer",
+          "type": "numeric(2)",
           "primaryKey": false,
           "notNull": false
         },
         "responseTime": {
           "name": "responseTime",
-          "type": "integer",
+          "type": "numeric(2)",
           "primaryKey": false,
           "notNull": false
         },

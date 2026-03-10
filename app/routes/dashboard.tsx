@@ -2,7 +2,7 @@ import { auth } from "~/utils/session.server";
 import type { Route } from "./+types/dashboard";
 import { Container } from "~/components/Container";
 import { H } from "~/components/Headings";
-import { Form, useFetcher } from "react-router";
+import { Form, href, Link, useFetcher } from "react-router";
 import { Field, Submit } from "~/components/Forms";
 import { parseFormData, validationError } from "~/utils/parse.server";
 import z from "zod";
@@ -69,7 +69,7 @@ function Monitor({ monitor }) {
   }, 5000)
   console.log(fetcher.data)
   return (
-    <div className="border rounded-lg px-4 py-2 grid grid-cols-3">
+    <Link to={href("/monitor/:monitor_hId", { monitor_hId: monitor.hId })} className="border rounded-lg px-4 py-2 grid grid-cols-3">
       <CardSection title="URL">
         {monitor.url}
       </CardSection>
@@ -79,7 +79,7 @@ function Monitor({ monitor }) {
       <CardSection title="Response Time" right>
         {fetcher?.data?.logs ? <>{Math.round(fetcher?.data?.logs?.responseTime)}</> : '---'}ms
       </CardSection>
-    </div>
+    </Link>
   )
 }
 

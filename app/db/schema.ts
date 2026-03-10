@@ -1,39 +1,39 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { createId } from '@paralleldrive/cuid2'
+import { pgTable, integer, bigserial, serial, timestamp, boolean, varchar, decimal } from "drizzle-orm/pg-core";
 
 export const USER_TYPES = [
   'OWNER',
   'MANAGER'
 ] as const
 
-export const users = sqliteTable('users', {
-  id: integer({ mode: 'number' }).primaryKey({ autoIncrement: true }),
-  hId: text().unique().notNull().$defaultFn(() => `usr_${createId()}`),
-  username: text().unique().notNull(),
-  userType: text({ enum: USER_TYPES }).default('OWNER'),
-  firstName: text(),
-  lastName: text(),
-  loginCodeHash: text(),
-  loginCodeExpires: integer({ mode: 'timestamp_ms' }),
-  isActive: integer({ mode: 'boolean' }).default(true).notNull(),
+export const users = pgTable('users', {
+  id: serial().primaryKey(),
+  hId: varchar({ length: 40 }).unique().notNull().$defaultFn(() => `usr_${createId()}`),
+  username: varchar({ length: 255 }).unique(),
+  userType: varchar({ length: 50, enum: USER_TYPES }).default('OWNER'),
+  firstName: varchar({ length: 100 }),
+  lastName: varchar({ length: 100 }),
+  loginCodeHash: varchar({ length: 255 }),
+  loginCodeExpires: timestamp({ withTimezone: true, precision: 6 }),
+  isActive: boolean().default(true)
 })
 
-export const monitors = sqliteTable('monitors', {
-  id: integer({ mode: 'number' }).primaryKey({ autoIncrement: true }),
-  hId: text().unique().notNull().$defaultFn(() => `mon_${createId()}`),
-  url: text(),
-  interval: integer({ mode: 'number' }).notNull().default(300),
-  isActive: integer({ mode: 'boolean' }).default(true).notNull(),
+export const monitors = pgTable('monitors', {
+  id: serial().primaryKey(),
+  hId: varchar({ length: 40 }).unique().notNull().$defaultFn(() => `mon_${createId()}`),
+  url: varchar({ length: 255 }),
+  interval: integer().default(300),
+  isActive: boolean().default(true)
 })
 
-export const monitorLogs = sqliteTable('monitorLogs', {
-  id: integer({ mode: 'number' }).primaryKey({ autoIncrement: true }),
-  monitorId: integer({ mode: 'number' }),
-  statusCode: integer({ mode: 'number' }),
-  responseTimeDNS: integer({ mode: 'number' }),
-  responseTimeTCP: integer({ mode: 'number' }),
-  responseTimeTLS: integer({ mode: 'number' }),
-  responseTimeFirstByte: integer({ mode: 'number' }),
-  responseTime: integer({ mode: 'number' }),
-  createdAt: integer({ mode: 'timestamp_ms' })
+export const monitorLogs = pgTable('monitorLogs', {
+  id: serial().primaryKey(),
+  monitorId: serial().notNull(),
+  statusCode: integer(),
+  responseTimeDNS: decimal({ precision: 8, scale: 4 }),
+  responseTimeTCP: decimal({ precision: 8, scale: 4 }),
+  responseTimeTLS: decimal({ precision: 8, scale: 4 }),
+  responseTimeFirstByte: decimal({ precision: 8, scale: 4 }),
+  responseTime: decimal({ precision: 8, scale: 4 }),
+  createdAt: timestamp({ withTimezone: true, precision: 6 }),
 })
