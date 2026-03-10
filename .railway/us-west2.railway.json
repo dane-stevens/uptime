@@ -1,7 +1,7 @@
 {
   "$schema": "https://railway.com/railway.schema.json",
   "deploy": {
-    "startCommand": "pnpm start:monitors",
+    "startCommand": "pnpm start:worker",
     "restartPolicyType": "ALWAYS",
     "multiRegionConfig": {
       "us-west2": {
