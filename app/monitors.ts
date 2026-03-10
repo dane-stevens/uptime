@@ -1,16 +1,11 @@
 import { db } from "~/utils/db.server";
 import { Queue, } from 'bullmq'
 import { env } from "./utils/env.server";
+import { regions } from "./utils/regions";
 
 
 const queueName = `${env.NODE_ENV}_monitor-checks`
 
-export const regions = [
-  'us-west2',
-  'us-east4-eqdc4a',
-  'europe-west4-drams3a',
-  'asia-southeast1-eqsg3a'
-]
 
 const queues: Queue[] = []
 regions?.map(region => {

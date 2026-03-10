@@ -1,0 +1,6 @@
+export const regions = [
+  'us-west2',
+  'us-east4-eqdc4a',
+  'europe-west4-drams3a',
+  'asia-southeast1-eqsg3a'
+]
