@@ -93,7 +93,7 @@ function testUrl(url: string): Promise<{ success: boolean; error?: string; first
       res.once("end", () => {
         timings.total = performance.now() - start;
         resolve({
-          success: true,
+          success: res.statusCode && res.statusCode < 500,
           ...timings
         });
       });
