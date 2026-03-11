@@ -30,7 +30,7 @@ new Worker(`${queueName}_${env.RAILWAY_REPLICA_REGION}`, async (job) => {
       {
         monitorId,
         region: env.RAILWAY_REPLICA_REGION,
-        success: res.statusCode === 200
+        success: res.success
       },
       {
         windowMs: 15000,
@@ -81,7 +81,7 @@ new Worker(`${queueName}_${env.RAILWAY_REPLICA_REGION}`, async (job) => {
   }
 })
 
-function testUrl(url: string): Promise<{ firstByte: number; statusCode: number; total: number; dns: number; tcp: number; tls: number }> {
+function testUrl(url: string): Promise<{ success: boolean; error?: string; firstByte: number; statusCode: number; total: number; dns: number; tcp: number; tls: number }> {
   return new Promise((resolve, reject) => {
     const timings: any = {};
     const start = performance.now();
@@ -92,7 +92,10 @@ function testUrl(url: string): Promise<{ firstByte: number; statusCode: number; 
 
       res.once("end", () => {
         timings.total = performance.now() - start;
-        resolve(timings);
+        resolve({
+          success: true,
+          ...timings
+        });
       });
 
       res.resume();
@@ -116,7 +119,13 @@ function testUrl(url: string): Promise<{ firstByte: number; statusCode: number; 
       });
     });
 
-    req.on("error", reject);
+    req.on("error", err => {
+      resolve({
+        success: false,
+        error: err.message,
+        ...timings
+      })
+    });
     req.end();
   });
 }
