@@ -24,7 +24,9 @@ export const monitors = pgTable('monitors', {
   url: varchar({ length: 255 }),
   interval: integer().default(300),
   isActive: boolean().default(true),
-  regions: json().$type<string[]>().default([])
+  regions: json().$type<string[]>().default([]),
+  failureQuorum: integer().default(2),
+  successQuorum: integer().default(2)
 })
 
 export const monitorLogs = pgTable('monitorLogs', {

@@ -12,7 +12,7 @@ const agent = new https.Agent({
 });
 
 new Worker<typeof monitors.$inferSelect>(`${queueName}_${env.RAILWAY_REPLICA_REGION}`, async (job) => {
-  const { id, hId, url, regions } = job.data
+  const { id, hId, url, regions, failureQuorum, successQuorum } = job.data
 
   console.log('running worker----', regions, env.RAILWAY_REPLICA_REGION)
   if (!regions?.includes(env.RAILWAY_REPLICA_REGION)) return { skipped: true }
@@ -36,8 +36,8 @@ new Worker<typeof monitors.$inferSelect>(`${queueName}_${env.RAILWAY_REPLICA_REG
       },
       {
         windowMs: 15000,
-        failureQuorum: 2,
-        successQuorum: 2
+        failureQuorum,
+        successQuorum
       }
     )
 
