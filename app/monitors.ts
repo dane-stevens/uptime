@@ -2,12 +2,13 @@ import { db } from "~/utils/db.server";
 import { Queue, } from 'bullmq'
 import { env } from "./utils/env.server";
 import { regions } from "./utils/regions";
+import type { monitors } from "./db/schema";
 
 
 const queueName = `${env.NODE_ENV}_monitor-checks`
 
 
-const queues: Queue[] = []
+const queues: Queue<typeof monitors.$inferSelect>[] = []
 regions?.map(region => {
   queues.push(new Queue(`${queueName}_${region}`, { connection: { url: env.REDIS_URL } }))
 })
@@ -31,7 +32,7 @@ export async function loadMonitors() {
         { every: 1000 * monitor.interval },
         {
           name: 'url-monitor',
-          data: { monitorId: monitor.id, url: monitor.url },
+          data: monitor,
         }
       )
     }

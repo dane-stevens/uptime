@@ -22,6 +22,7 @@ export function meta({ }: Route.MetaArgs) {
 
 export async function loader({ request }: Route.LoaderArgs) {
   await auth(request)
+  await loadMonitors()
   const monitors = await db.query.monitors.findMany()
   return { monitors }
 }

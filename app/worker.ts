@@ -1,4 +1,4 @@
-import { monitorLogs } from "./db/schema"
+import { monitorLogs, monitors } from "./db/schema"
 import { db } from "./utils/db.server"
 import { env } from "./utils/env.server"
 import { queueName } from "./utils/queues.server"
@@ -11,10 +11,12 @@ const agent = new https.Agent({
   keepAlive: false
 });
 
+new Worker<typeof monitors.$inferSelect>(`${queueName}_${env.RAILWAY_REPLICA_REGION}`, async (job) => {
+  const { id, url, regions } = job.data
 
+  console.log('running worker----', regions, env.RAILWAY_REPLICA_REGION)
+  if (!regions?.includes(env.RAILWAY_REPLICA_REGION)) return { skipped: true }
 
-new Worker(`${queueName}_${env.RAILWAY_REPLICA_REGION}`, async (job) => {
-  const { monitorId, url } = job.data
 
   const controller = new AbortController()
 
@@ -28,7 +30,7 @@ new Worker(`${queueName}_${env.RAILWAY_REPLICA_REGION}`, async (job) => {
 
     const result = await processResult(
       {
-        monitorId,
+        monitorId: id,
         region: env.RAILWAY_REPLICA_REGION,
         success: res.success
       },
@@ -49,17 +51,17 @@ new Worker(`${queueName}_${env.RAILWAY_REPLICA_REGION}`, async (job) => {
       console.log('STATUS:', result.status)
     }
 
-    await db.insert(monitorLogs).values({
-      monitorId: monitorId,
-      statusCode: res.statusCode,
-      responseTime: res.total,
-      responseTimeDNS: res.dns,
-      responseTimeFirstByte: res.firstByte,
-      responseTimeTCP: res.tcp,
-      responseTimeTLS: res.tls,
-      region: env.RAILWAY_REPLICA_REGION,
-      createdAt: now
-    })
+    // await db.insert(monitorLogs).values({
+    //   monitorId: monitorId,
+    //   statusCode: res.statusCode,
+    //   responseTime: res.total,
+    //   responseTimeDNS: res.dns,
+    //   responseTimeFirstByte: res.firstByte,
+    //   responseTimeTCP: res.tcp,
+    //   responseTimeTLS: res.tls,
+    //   region: env.RAILWAY_REPLICA_REGION,
+    //   createdAt: now
+    // })
 
     return {
       status: res.statusCode,
@@ -160,13 +162,13 @@ export async function processResult(
   const key = success ? successesKey : failuresKey
 
   // 1️⃣ record result
-  await redis.zadd(key, now, region)
+  await redis.zAdd(key, { score: now, value: region })
 
   // 2️⃣ remove old entries outside window
-  await redis.zremrangebyscore(key, 0, cutoff)
+  await redis.zRemRangeByScore(key, 0, cutoff)
 
   // 3️⃣ count recent results
-  const count = await redis.zcount(key, cutoff, now)
+  const count = await redis.zCount(key, cutoff, now)
 
   // 4️⃣ quorum evaluation
   if (!success && Number(count || 0) >= failureQuorum) {
